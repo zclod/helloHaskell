@@ -32,7 +32,11 @@ vTriangle a b = strokeTrail $ closeTrail $ trailFromVertices pointlist
    where pointlist = origin : map (p2 . unr2) [a, b]
 
 makeParallelogram :: V2 Double -> V2 Double -> Diagram B
-makeParallelogram a b = fromOffsets [a] # lc red <> fromOffsets [b] # lc blue
+makeParallelogram a b = fromOffsets [a] # lc red
+                      <> fromOffsets [b] # lc blue
+                      <> strokeLocTrail (fromOffsets [b] `at` (origin .+^ a)) # lc red # dashingG [0.06,0.03] 0
+                      <> strokeLocTrail (fromOffsets [a] `at` (origin .+^ b)) # lc blue # dashingG [0.06,0.03] 0
+                      <> fromOffsets [(a ^+^ b)] # lc violet
 
 pointGrid :: Double -> Double -> Diagram B
 pointGrid i r = atPoints pointlist circlelist
@@ -45,8 +49,8 @@ pointGrid i r = atPoints pointlist circlelist
                                                    else circle 0.5 # fc violet
 
 diagram :: Diagram B
-diagram = pointGrid 30 15
--- diagram = makeParallelogram unitX (unitX # rotateBy (1/8))
+-- diagram = pointGrid 30 15
+diagram = makeParallelogram unitX (unitX # rotateBy (1/8))
 -- diagram = pentagon 1
 --   # explodeTrail  -- generate a list of diagrams
 --   # zipWith lc [orange, green, yellow, red, blue]
